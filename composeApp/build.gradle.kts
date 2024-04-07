@@ -52,6 +52,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     packaging {
         resources {
@@ -68,7 +69,40 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     dependencies {
+        implementation(libs.androidx.appcompat)
+        implementation(libs.androidx.material)
+        implementation(libs.androidx.constraintlayout)
+        testImplementation(libs.junit)
+        androidTestImplementation(libs.junit)
+        androidTestImplementation(libs.androidx.espresso.core)
         debugImplementation(libs.compose.ui.tooling)
     }
 }
 
+tasks.register("printHelloWorldJvm") {
+    group = "jvm"
+    description = "Prints 'Hello, world!' to the console on JVM"
+    doLast {
+        println("Hello, world!")
+    }
+}
+
+tasks.register("printHelloWorldAndroid") {
+    group = "android"
+    description = "Prints 'Hello, world!' to the console on Android"
+    doLast {
+//        exec {
+//            commandLine(
+//                "adb", "shell", "am", "start",
+//                "-n", "com.example/.MainActivity",
+//                "-a", "android.intent.action.MAIN",
+//                "-c", "android.intent.category.LAUNCHER"
+//            )
+//        }
+        exec {
+            commandLine(
+                "adb", "shell", "echo", "Hello World!"
+            )
+        }
+    }
+}
