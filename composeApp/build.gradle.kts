@@ -20,7 +20,7 @@ kotlin {
             }
         }
     }
-    
+
     sourceSets {
         jvm()
         androidMain.dependencies {
@@ -73,35 +73,69 @@ android {
         implementation(libs.androidx.material)
         implementation(libs.androidx.constraintlayout)
         testImplementation(libs.junit)
-        androidTestImplementation(libs.junit)
+        androidTestImplementation(libs.androidx.test.junit)
         androidTestImplementation(libs.androidx.espresso.core)
         debugImplementation(libs.compose.ui.tooling)
     }
 }
 
-tasks.register("printHelloWorldJvm") {
+tasks.register("jvmPrintHelloWorld") {
     group = "jvm"
-    description = "Prints 'Hello, world!' to the console on JVM"
+    description = "Print 'Hello, world!' to the console on JVM"
     doLast {
         println("Hello, world!")
     }
 }
 
-tasks.register("printHelloWorldAndroid") {
+tasks.register("androidPrintHelloWorld") {
     group = "android"
-    description = "Prints 'Hello, world!' to the console on Android"
+    description = "Print 'Hello world!' to the console on Android"
     doLast {
-//        exec {
-//            commandLine(
-//                "adb", "shell", "am", "start",
-//                "-n", "com.example/.MainActivity",
-//                "-a", "android.intent.action.MAIN",
-//                "-c", "android.intent.category.LAUNCHER"
-//            )
-//        }
+        // Detect if emulator is running
+        val emulator = ProcessBuilder("adb", "devices")
+            .start()
+            .inputStream
+            .bufferedReader()
+            .useLines { lines ->
+                lines.filter { it.contains("emulator") }
+                    .map { it.substringBefore("\t") }
+                    .firstOrNull()
+            }
+        if (emulator == null) {
+            println("\u001B[31mNo emulator found running. Please start an emulator and try again.\u001B[0m")
+            return@doLast
+        }
+
+        // If MainActivity is running, restart it
         exec {
             commandLine(
-                "adb", "shell", "echo", "Hello World!"
+                "adb", "shell", "am", "force-stop",
+                "cn.connor.kotlin"
+            )
+        }
+        Thread.sleep(1000)
+        exec {
+            commandLine(
+                "adb", "shell", "am", "start",
+                "-n", "cn.connor.kotlin/.MainActivity"
+            )
+        }
+        Thread.sleep(3000)
+        ProcessBuilder("adb", "logcat", "-d")
+            .start()
+            .inputStream
+            .bufferedReader()
+            .useLines { lines ->
+                lines.filter { it.contains("HelloWorld") }
+                    .map { it.substringAfter(": ").trim() }
+                    .firstOrNull{ it.contains("Hello World!") }
+                    ?.let { println(it) }
+            }
+
+        // clear the logcat
+        exec {
+            commandLine(
+                "adb", "logcat", "-c"
             )
         }
     }

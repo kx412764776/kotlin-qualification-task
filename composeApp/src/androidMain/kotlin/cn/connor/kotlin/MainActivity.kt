@@ -10,10 +10,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.d("Hello World!", "Hello World!")
+        Log.i("HelloWorld", "Hello World!")
         setContent {
             App()
         }
-        finish()
     }
 }
