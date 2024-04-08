@@ -70,11 +70,6 @@ android {
     }
     dependencies {
         implementation(libs.androidx.appcompat)
-        implementation(libs.androidx.material)
-        implementation(libs.androidx.constraintlayout)
-        testImplementation(libs.junit)
-        androidTestImplementation(libs.androidx.test.junit)
-        androidTestImplementation(libs.androidx.espresso.core)
         debugImplementation(libs.compose.ui.tooling)
     }
 }
@@ -128,22 +123,21 @@ tasks.register("androidPrintHelloWorld") {
             .useLines { lines ->
                 lines.filter { it.contains("HelloWorld") }
                     .map { it.substringAfter(": ").trim() }
-                    .firstOrNull{ it.contains("Hello World!") }
+                    .firstOrNull { it.contains("Hello World!") }
                     ?.let { println(it) }
             }
-
-        // clear the logcat
-        exec {
-            commandLine(
-                "adb", "logcat", "-c"
-            )
-        }
     }
 }
 
-open class JvmPrintFibonacci: DefaultTask() {
+tasks.register<JvmPrintFibonacci>("jvmPrintFibonacciSequence") {
+    group = "jvm"
+    description = "Print the Fibonacci sequence to the console on JVM"
+}
+
+abstract class JvmPrintFibonacci : DefaultTask() {
     private var _length: Int = 0
-    @Option(option = "n", description = "The length of the Fibonacci sequence")
+
+    @Option(option = "N", description = "The length of the Fibonacci sequence")
     fun setLength(length: String) {
         _length = length.toIntOrNull() ?: 0
     }
@@ -175,7 +169,45 @@ open class JvmPrintFibonacci: DefaultTask() {
     }
 }
 
-tasks.register<JvmPrintFibonacci>("jvmPrintFibonacciSequence") {
-    group = "jvm"
-    description = "Print the Fibonacci sequence to the console on JVM"
+tasks.register<AndroidPrintFibonacci>("androidPrintFibonacciSequence") {
+    group = "android"
+    description = "Print the Fibonacci sequence to the console on Android"
+}
+
+abstract class AndroidPrintFibonacci : DefaultTask() {
+    private var _n: Int = 0
+
+    @Option(option = "N", description = "The length of the Fibonacci sequence")
+    fun setLength(n: String) {
+        _n = n.toIntOrNull()
+            ?: throw IllegalArgumentException(
+                "\u001B[31mPlease provide a positive integer for the length of the Fibonacci sequence.\u001B[0m"
+            )
+    }
+
+    @get:Input
+    val n: Int
+        get() = _n
+
+    @TaskAction
+    fun printFibonacci() {
+        exec {
+            commandLine(
+                "adb", "shell", "am", "startservice",
+                "-n", "cn.connor.kotlin/.FibonacciService",
+                "--ei", "N", n.toString()
+            )
+        }
+        Thread.sleep(3000)
+        ProcessBuilder("adb", "logcat", "-d")
+            .start()
+            .inputStream
+            .bufferedReader()
+            .useLines { lines ->
+                lines.filter { it.contains("Fibonacci") }
+                    .map { it.substringAfter(": ").trim() }
+                    .firstOrNull()
+                    ?.let { println(it) }
+            }
+    }
 }
