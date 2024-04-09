@@ -122,7 +122,7 @@ tasks.register("androidPrintHelloWorld") {
             .useLines { lines ->
                 lines.filter { it.contains("HelloWorld") }
                     .map { it.substringAfter(": ").trim() }
-                    .firstOrNull { it.contains("Hello World!") }
+                    .lastOrNull() { it.contains("Hello World!") }
                     ?.let { println(it) }
             }
     }
