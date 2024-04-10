@@ -82,61 +82,9 @@ tasks.register("jvmPrintHelloWorld") {
     }
 }
 
-tasks.register("androidPrintHelloWorld") {
+tasks.register<AndroidPrintHelloWorld>("androidPrintHelloWorld") {
     group = "android"
     description = "Print 'Hello world!' to the console on Android"
-    doLast {
-        // Detect if emulator is running
-        ProcessBuilder("adb", "devices")
-            .start()
-            .inputStream
-            .bufferedReader()
-            .useLines { lines ->
-                lines.filter { it.contains("emulator") }
-                    .map { it.substringBefore("\t") }
-                    .firstOrNull()
-            }
-            ?: throw IllegalArgumentException("\u001B[31mNo emulator found running. Please start an emulator and try again.\u001B[0m")
-
-
-        // If MainActivity is running, restart it
-        exec {
-            commandLine(
-                "adb", "shell", "am", "force-stop",
-                "cn.connor.kotlin"
-            )
-        }
-        exec {
-            commandLine(
-                "adb", "shell", "am", "start",
-                "-n", "cn.connor.kotlin/.MainActivity"
-            )
-        }
-
-        // Poll the logs and stop when the desired output is found or after timeout
-        val startTime = System.currentTimeMillis()
-        val timeout = 2000L
-        var found = false
-
-        while (System.currentTimeMillis() - startTime < timeout && !found) {
-            val log = ProcessBuilder("adb", "logcat", "-d")
-                .start()
-                .inputStream
-                .bufferedReader()
-                .useLines { lines ->
-                    lines.filter { it.contains("HelloWorld") }
-                        .lastOrNull()
-                        ?.substringAfter(": ")
-                        ?.trim()
-                }
-            if (log != null) {
-                println(log)
-                found = true
-            } else {
-                Thread.sleep(2000)
-            }
-        }
-    }
 }
 
 tasks.register<JvmPrintFibonacci>("jvmPrintFibonacciSequence") {

@@ -1,23 +1,8 @@
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.options.Option
 import java.io.ByteArrayOutputStream
 
-abstract class AndroidPrintFibonacci : DefaultTask() {
-    private var _length: Int = 0
-
-    @Option(option = "N", description = "The length of the Fibonacci sequence")
-    fun setLength(n: String) {
-        _length = n.toIntOrNull()
-            ?: throw IllegalArgumentException(
-                "\u001B[31mPlease provide a positive integer for the length of the Fibonacci sequence.\u001B[0m"
-            )
-    }
-
-    @get:Input
-    val length: Int
-        get() = _length
+abstract class AndroidPrintHelloWorld : DefaultTask() {
 
     init {
         // Detect if emulator is running
@@ -32,14 +17,19 @@ abstract class AndroidPrintFibonacci : DefaultTask() {
             }
             ?: throw IllegalArgumentException("\u001B[31mNo emulator found running. Please start an emulator and try again.\u001B[0m")
     }
-
     @TaskAction
-    fun getFibonacciFromLog() {
+    fun printHelloWorld() {
+        // If MainActivity is running, restart it
         project.exec {
             commandLine(
-                "adb", "shell", "am", "startservice",
-                "-n", "cn.connor.kotlin/.FibonacciService",
-                "--ei", "N", length.toString()
+                "adb", "shell", "am", "force-stop",
+                "cn.connor.kotlin"
+            )
+        }
+        project.exec {
+            commandLine(
+                "adb", "shell", "am", "start",
+                "-n", "cn.connor.kotlin/.MainActivity"
             )
             standardOutput = ByteArrayOutputStream()
         }
@@ -55,7 +45,7 @@ abstract class AndroidPrintFibonacci : DefaultTask() {
                 .inputStream
                 .bufferedReader()
                 .useLines { lines ->
-                    lines.filter { it.contains("Fibonacci") }
+                    lines.filter { it.contains("HelloWorld") }
                         .lastOrNull()
                         ?.substringAfter(": ")
                         ?.trim()

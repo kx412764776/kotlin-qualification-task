@@ -3,7 +3,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 
-open class JvmPrintFibonacci : DefaultTask() {
+abstract class JvmPrintFibonacci : DefaultTask() {
     private var _length: Int = 0
 
     @Option(option = "N", description = "The length of the Fibonacci sequence")
