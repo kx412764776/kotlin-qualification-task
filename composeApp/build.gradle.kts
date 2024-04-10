@@ -96,8 +96,7 @@ tasks.register("androidPrintHelloWorld") {
                     .map { it.substringBefore("\t") }
                     .firstOrNull()
             }
-            ?:
-            throw IllegalArgumentException("\u001B[31mNo emulator found running. Please start an emulator and try again.\u001B[0m")
+            ?: throw IllegalArgumentException("\u001B[31mNo emulator found running. Please start an emulator and try again.\u001B[0m")
 
 
         // If MainActivity is running, restart it
@@ -107,24 +106,36 @@ tasks.register("androidPrintHelloWorld") {
                 "cn.connor.kotlin"
             )
         }
-        Thread.sleep(1000)
         exec {
             commandLine(
                 "adb", "shell", "am", "start",
                 "-n", "cn.connor.kotlin/.MainActivity"
             )
         }
-        Thread.sleep(3000)
-        ProcessBuilder("adb", "logcat", "-d")
-            .start()
-            .inputStream
-            .bufferedReader()
-            .useLines { lines ->
-                lines.filter { it.contains("HelloWorld") }
-                    .map { it.substringAfter(": ").trim() }
-                    .lastOrNull() { it.contains("Hello World!") }
-                    ?.let { println(it) }
+
+        // Poll the logs and stop when the desired output is found or after timeout
+        val startTime = System.currentTimeMillis()
+        val timeout = 2000L
+        var found = false
+
+        while (System.currentTimeMillis() - startTime < timeout && !found) {
+            val log = ProcessBuilder("adb", "logcat", "-d")
+                .start()
+                .inputStream
+                .bufferedReader()
+                .useLines { lines ->
+                    lines.filter { it.contains("HelloWorld") }
+                        .lastOrNull()
+                        ?.substringAfter(": ")
+                        ?.trim()
+                }
+            if (log != null) {
+                println(log)
+                found = true
+            } else {
+                Thread.sleep(2000)
             }
+        }
     }
 }
 

@@ -39,11 +39,6 @@ open class AndroidPrintFibonacci : DefaultTask() {
                 "--ei", "N", length.toString()
             )
         }
-        // Setup a process builder for adb logcat
-        val processBuilder = ProcessBuilder("adb", "logcat", "-s", "Fibonacci:*")
-        val process = processBuilder.start()
-
-        val bufferedReader = process.inputStream.bufferedReader()
 
         // Poll the logs and stop when the desired output is found or after timeout
         val startTime = System.currentTimeMillis()
@@ -51,19 +46,22 @@ open class AndroidPrintFibonacci : DefaultTask() {
         var found = false
 
         while (System.currentTimeMillis() - startTime < timeout && !found) {
-            val line = bufferedReader.readLine() ?: break
-            if (line.contains("Fibonacci")) {
-                println(line.substringAfter(": ").trim())
+            val log = ProcessBuilder("adb", "logcat", "-d")
+                .start()
+                .inputStream
+                .bufferedReader()
+                .useLines { lines ->
+                    lines.filter { it.contains("Fibonacci") }
+                        .lastOrNull()
+                        ?.substringAfter(": ")
+                        ?.trim()
+                }
+            if (log != null) {
+                println(log)
                 found = true
+            } else {
+                Thread.sleep(2000)
             }
-        }
-
-        // Clean up
-        bufferedReader.close()
-        process.destroy()
-
-        if (!found) {
-            throw RuntimeException("Fibonacci sequence not found in logs within timeout period")
         }
     }
 }
