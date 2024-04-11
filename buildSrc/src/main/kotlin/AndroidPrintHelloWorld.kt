@@ -5,6 +5,10 @@ import java.io.ByteArrayOutputStream
 abstract class AndroidPrintHelloWorld : DefaultTask() {
 
     init {
+
+    }
+    @TaskAction
+    fun printHelloWorld() {
         // Detect if emulator is running
         ProcessBuilder("adb", "devices")
             .start()
@@ -16,9 +20,7 @@ abstract class AndroidPrintHelloWorld : DefaultTask() {
                     .firstOrNull()
             }
             ?: throw IllegalArgumentException("\u001B[31mNo emulator found running. Please start an emulator and try again.\u001B[0m")
-    }
-    @TaskAction
-    fun printHelloWorld() {
+
         // If MainActivity is running, restart it
         project.exec {
             commandLine(

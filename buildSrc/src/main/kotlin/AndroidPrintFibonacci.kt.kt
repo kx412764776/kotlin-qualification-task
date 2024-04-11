@@ -19,7 +19,8 @@ abstract class AndroidPrintFibonacci : DefaultTask() {
     val length: Int
         get() = _length
 
-    init {
+    @TaskAction
+    fun getFibonacciFromLog() {
         // Detect if emulator is running
         ProcessBuilder("adb", "devices")
             .start()
@@ -31,10 +32,7 @@ abstract class AndroidPrintFibonacci : DefaultTask() {
                     .firstOrNull()
             }
             ?: throw IllegalArgumentException("\u001B[31mNo emulator found running. Please start an emulator and try again.\u001B[0m")
-    }
 
-    @TaskAction
-    fun getFibonacciFromLog() {
         project.exec {
             commandLine(
                 "adb", "shell", "am", "startservice",
