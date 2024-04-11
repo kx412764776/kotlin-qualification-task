@@ -11,7 +11,7 @@ Qualification task for "Support Android target in kotlinx-benchmark" project
     - Android SDK & Emulator
 3. Configure Environment Variables:
     - `JAVA_HOME` to JDK 17
-    - `adb` in SYSTEM PATH
+    - `adb` in SYSTEM PATH, verify by running `adb --version`
 
 ## Running Gradle Tasks
 
