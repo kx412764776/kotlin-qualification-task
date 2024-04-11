@@ -78,7 +78,7 @@ tasks.register("jvmPrintHelloWorld") {
     group = "jvm"
     description = "Print 'Hello, world!' to the console on JVM"
     doLast {
-        println("Hello, world!")
+        println("Hello world!")
     }
 }
 
