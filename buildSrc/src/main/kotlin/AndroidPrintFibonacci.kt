@@ -5,6 +5,11 @@ import org.gradle.api.tasks.options.Option
 import java.io.ByteArrayOutputStream
 
 abstract class AndroidPrintFibonacci : DefaultTask() {
+
+    init {
+        this.dependsOn("assembleDebug")
+    }
+
     private var _length: Int = 0
 
     @Option(option = "N", description = "The length of the Fibonacci sequence")
@@ -21,22 +26,31 @@ abstract class AndroidPrintFibonacci : DefaultTask() {
 
     @TaskAction
     fun getFibonacciFromLog() {
-        // Detect if emulator is running
-        ProcessBuilder("adb", "devices")
-            .start()
-            .inputStream
-            .bufferedReader()
-            .useLines { lines ->
-                lines.filter { it.contains("emulator") }
-                    .map { it.substringBefore("\t") }
-                    .firstOrNull()
+
+        val emulatorId = AndroidUtils.getEmulatorId()
+        val packageName = "cn.connor.kotlin"
+
+        if (!AndroidUtils.isAppInstalled(emulatorId, packageName)) {
+            val apkPath = "${project.projectDir}/build/outputs/apk/debug/composeApp-debug.apk"
+            AndroidUtils.installApp(project, emulatorId, apkPath)
+            Thread.sleep(2000)
+        }
+
+        if (!AndroidUtils.checkIfMainActivityIsRunning(emulatorId, packageName)) {
+            project.exec {
+                commandLine(
+                    "adb", "-s", emulatorId, "shell", "am", "start",
+                    "-n", "$packageName/.MainActivity"
+                )
+                standardOutput = ByteArrayOutputStream()
             }
-            ?: throw IllegalArgumentException("\u001B[31mNo emulator found running. Please start an emulator and try again.\u001B[0m")
+            Thread.sleep(2000)
+        }
 
         project.exec {
             commandLine(
                 "adb", "shell", "am", "startservice",
-                "-n", "cn.connor.kotlin/.FibonacciService",
+                "-n", "$packageName/.FibonacciService",
                 "--ei", "N", length.toString()
             )
             standardOutput = ByteArrayOutputStream()

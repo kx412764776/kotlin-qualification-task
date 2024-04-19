@@ -5,35 +5,41 @@ import java.io.ByteArrayOutputStream
 abstract class AndroidPrintHelloWorld : DefaultTask() {
 
     init {
-
+        this.dependsOn("assembleDebug")
     }
+
     @TaskAction
     fun printHelloWorld() {
-        // Detect if emulator is running
-        ProcessBuilder("adb", "devices")
-            .start()
-            .inputStream
-            .bufferedReader()
-            .useLines { lines ->
-                lines.filter { it.contains("emulator") }
-                    .map { it.substringBefore("\t") }
-                    .firstOrNull()
-            }
-            ?: throw IllegalArgumentException("\u001B[31mNo emulator found running. Please start an emulator and try again.\u001B[0m")
 
-        // If MainActivity is running, restart it
-        project.exec {
-            commandLine(
-                "adb", "shell", "am", "force-stop",
-                "cn.connor.kotlin"
-            )
+        val emulatorId = AndroidUtils.getEmulatorId()
+        val packageName = "cn.connor.kotlin"
+
+        if (!AndroidUtils.isAppInstalled(emulatorId, packageName)) {
+            val apkPath = "${project.projectDir}/build/outputs/apk/debug/composeApp-debug.apk"
+            AndroidUtils.installApp(project, emulatorId, apkPath)
         }
-        project.exec {
-            commandLine(
-                "adb", "shell", "am", "start",
-                "-n", "cn.connor.kotlin/.MainActivity"
-            )
-            standardOutput = ByteArrayOutputStream()
+
+        if (!AndroidUtils.checkIfMainActivityIsRunning(emulatorId, packageName)) {
+            project.exec {
+                commandLine(
+                    "adb", "-s", emulatorId, "shell", "am", "start",
+                    "-n", "$packageName/.MainActivity"
+                )
+                standardOutput = ByteArrayOutputStream()
+            }
+        } else {
+            project.exec {
+                commandLine(
+                    "adb", "-s", emulatorId, "shell", "am", "force-stop", packageName
+                )
+            }
+            project.exec {
+                commandLine(
+                    "adb", "-s", emulatorId, "shell", "am", "start",
+                    "-n", "$packageName/.MainActivity"
+                )
+                standardOutput = ByteArrayOutputStream()
+            }
         }
 
         // Poll the logs and stop when the desired output is found or after timeout

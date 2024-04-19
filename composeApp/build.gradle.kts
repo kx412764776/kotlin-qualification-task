@@ -22,7 +22,14 @@ kotlin {
     }
 
     sourceSets {
-        jvm()
+        jvmMain {
+            kotlin {
+                setSrcDirs(listOf("src/jvmMain/kotlin"))
+            }
+            dependencies {
+                implementation(libs.kotlin.stdlib)
+            }
+        }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -74,18 +81,20 @@ android {
     }
 }
 
-tasks.register("jvmPrintHelloWorld") {
-    group = "jvm"
-    description = "Print 'Hello, world!' to the console on JVM"
-    doLast {
-        println("Hello world!")
-    }
-}
-
 tasks.register<AndroidPrintHelloWorld>("androidPrintHelloWorld") {
     group = "android"
     description = "Print 'Hello world!' to the console on Android"
 }
+
+//tasks.register<JavaExec>("jvmPrintHelloWorld") {
+//    group = "jvm"
+//    description = "Print 'Hello world!' to the console on JVM"
+//    mainClass.set("cn.connor.JvmPrintHelloWorld")
+//    classpath = sourceSets["jvmMain"].runtimeClasspath
+//    doFirst {
+//        println("Classpath: ${classpath.files.joinToString("\n")}")
+//    }
+//}
 
 tasks.register<JvmPrintFibonacci>("jvmPrintFibonacciSequence") {
     group = "jvm"
