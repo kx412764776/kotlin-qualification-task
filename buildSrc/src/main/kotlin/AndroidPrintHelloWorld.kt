@@ -17,6 +17,7 @@ abstract class AndroidPrintHelloWorld : DefaultTask() {
         if (!AndroidUtils.isAppInstalled(emulatorId, packageName)) {
             val apkPath = "${project.projectDir}/build/outputs/apk/debug/composeApp-debug.apk"
             AndroidUtils.installApp(project, emulatorId, apkPath)
+            Thread.sleep(2000)
         }
 
         if (!AndroidUtils.checkIfMainActivityIsRunning(emulatorId, packageName)) {
