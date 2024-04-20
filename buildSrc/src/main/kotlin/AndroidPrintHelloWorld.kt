@@ -27,6 +27,7 @@ abstract class AndroidPrintHelloWorld : DefaultTask() {
                     "-n", "$packageName/.MainActivity"
                 )
                 standardOutput = ByteArrayOutputStream()
+                Thread.sleep(2000)
             }
         } else {
             project.exec {
