@@ -1,5 +1,5 @@
 package cn.connor
 
 fun main() {
-    println("Hello World!")
+    println("Hello, World!")
 }

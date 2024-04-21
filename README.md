@@ -34,7 +34,7 @@ Qualification task for "Support Android target in kotlinx-benchmark" project
 6. Task: Print Fibonacci Sequence (--N as argument for length of sequence)
     - Jvm:
         ```shell
-        ./gradlew jvmPrintFibonacciSequence --N=7
+        ./gradlew jvmPrintFibonacciSequence -PN=7
         ```
     - Android: Before running the task, make sure running the app or start the MainActivity class
         ```shell

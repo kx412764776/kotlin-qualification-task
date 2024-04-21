@@ -21,15 +21,11 @@ kotlin {
         }
     }
 
+    dependencies {
+        implementation(gradleApi())
+    }
+
     sourceSets {
-        jvmMain {
-            kotlin {
-                setSrcDirs(listOf("src/jvmMain/kotlin"))
-            }
-            dependencies {
-                implementation(libs.kotlin.stdlib)
-            }
-        }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -81,24 +77,28 @@ android {
     }
 }
 
+tasks.register<JavaExec>("jvmPrintHelloWorld") {
+    group = "jvm"
+    description = "Print 'Hello world!' to the console on JVM"
+    mainClass.set("cn.connor.JvmPrintHelloWorldKt")
+    val compilation = kotlin.jvm().compilations["main"]
+    classpath = compilation.compileDependencyFiles + compilation.runtimeDependencyFiles + compilation.output.allOutputs
+}
+
 tasks.register<AndroidPrintHelloWorld>("androidPrintHelloWorld") {
     group = "android"
     description = "Print 'Hello world!' to the console on Android"
 }
 
-//tasks.register<JavaExec>("jvmPrintHelloWorld") {
-//    group = "jvm"
-//    description = "Print 'Hello world!' to the console on JVM"
-//    mainClass.set("cn.connor.JvmPrintHelloWorld")
-//    classpath = sourceSets["jvmMain"].runtimeClasspath
-//    doFirst {
-//        println("Classpath: ${classpath.files.joinToString("\n")}")
-//    }
-//}
-
-tasks.register<JvmPrintFibonacci>("jvmPrintFibonacciSequence") {
+tasks.register<JavaExec>("jvmPrintFibonacciSequence") {
     group = "jvm"
     description = "Print the Fibonacci sequence to the console on JVM"
+    mainClass.set("cn.connor.JvmPrintFibonacciKt")
+    val compilation = kotlin.jvm().compilations["main"]
+    classpath = compilation.compileDependencyFiles + compilation.runtimeDependencyFiles + compilation.output.allOutputs
+
+    val n = project.findProperty("N")?.toString() ?: "-1"
+    args(n)
 }
 
 tasks.register<AndroidPrintFibonacci>("androidPrintFibonacciSequence") {
