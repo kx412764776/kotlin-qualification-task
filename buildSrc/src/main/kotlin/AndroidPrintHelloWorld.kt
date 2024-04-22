@@ -46,7 +46,7 @@ abstract class AndroidPrintHelloWorld : DefaultTask() {
 
         // Poll the logs and stop when the desired output is found or after timeout
         val startTime = System.currentTimeMillis()
-        val timeout = 2000L
+        val timeout = 10000L
         var found = false
 
         while (System.currentTimeMillis() - startTime < timeout && !found) {
