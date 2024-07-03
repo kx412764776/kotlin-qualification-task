@@ -14,6 +14,10 @@ compose = "1.6.2"
 compose-plugin = "1.6.0"
 junit = "4.13.2"
 kotlin = "1.9.22"
+junitKtx = "1.1.5"
+androidx-junitKtx = "1.2.0"
+benchmarkJunit4 = "1.2.4"
+androidx-test-ext-junitKtx = "1.2.1"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
