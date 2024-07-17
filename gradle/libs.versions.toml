@@ -10,8 +10,11 @@ androidx-core-ktx = "1.12.0"
 androidx-espresso-core = "3.5.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
-compose = "1.6.2"
-compose-plugin = "1.6.0"
+compose = "1.6.8"
+compose-plugin = "1.6.10"
+# 1.6.0 doesn't support Kotlin 1.9.24.
+# Please see https://github.com/JetBrains/compose-jb/blob/master/VERSIONING.md#kotlin-compatibility to know the latest supported version of Kotlin.
+# Compose Multiplatform 1.6.10 or higher and Kotlin 2.0.0 or higher, Compose Multiplatform is compatible with Kotlin.
 junit = "4.13.2"
 kotlin = "1.9.22"
 junitKtx = "1.1.5"
@@ -39,3 +42,4 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version = "1.9.24" }

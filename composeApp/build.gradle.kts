@@ -51,9 +51,6 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
-        testInstrumentationRunnerArguments["androidx.benchmark.profiling.mode"] = "StackSampling"
-        testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "EMULATOR,LOW-BATTERY"
 
     }
     packaging {
@@ -72,9 +69,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     dependencies {
-        androidTestImplementation(files("E:/myjava/kotlinx-benchmark/examples/kotlin-multiplatform/build/outputs/unpacked-aar/release/classes.jar"))
-        androidTestImplementation("androidx.benchmark:benchmark-junit4:1.2.4")
         androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
+        androidTestImplementation("androidx.test:runner:1.6.1")
         androidTestImplementation("junit:junit:4.13.2")
         // androidTestImplementation("org.jetbrains.kotlin:kotlinx-benchmark-runtime:0.3.0")
         implementation(libs.androidx.appcompat)
