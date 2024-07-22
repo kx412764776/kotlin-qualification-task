@@ -1,36 +1,41 @@
 package test
 
-import androidx.benchmark.junit4.BenchmarkRule
-import androidx.benchmark.junit4.measureRepeated
+import androidx.benchmark.BenchmarkState
+import androidx.benchmark.ExperimentalBenchmarkStateApi
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Rule
+import kotlin.OptIn
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ParamBenchmark_Descriptor {
-  @get:Rule
-  val benchmarkRule: BenchmarkRule = BenchmarkRule()
-
   private val paramBenchmark: ParamBenchmark = ParamBenchmark()
 
   @Test
+  @OptIn(ExperimentalBenchmarkStateApi::class)
   fun benchmark_ParamBenchmark_mathBenchmark() {
-    benchmarkRule.measureRepeated {
+    val state = BenchmarkState(warmupCount = 5, repeatCount = 3)
+    while (state.keepRunning()) {
       paramBenchmark.mathBenchmark()
     }
   }
 
   @Test
+  @OptIn(ExperimentalBenchmarkStateApi::class)
   fun benchmark_ParamBenchmark_otherBenchmark() {
-    benchmarkRule.measureRepeated {
+    val state = BenchmarkState(warmupCount = 5, repeatCount = 3)
+    while (state.keepRunning()) {
       paramBenchmark.otherBenchmark()
     }
   }
 
   @Test
+  @OptIn(ExperimentalBenchmarkStateApi::class)
   fun benchmark_ParamBenchmark_textContentCheck() {
-    benchmarkRule.measureRepeated {
+    val state = BenchmarkState(warmupCount = 5, repeatCount = 3)
+    while (state.keepRunning()) {
       paramBenchmark.textContentCheck()
     }
   }

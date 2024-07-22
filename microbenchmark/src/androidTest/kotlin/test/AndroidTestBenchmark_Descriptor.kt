@@ -1,39 +1,42 @@
 package test
 
-import androidx.benchmark.junit4.BenchmarkRule
-import androidx.benchmark.junit4.measureRepeated
+import androidx.benchmark.BenchmarkState
+import androidx.benchmark.ExperimentalBenchmarkStateApi
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Rule
+import kotlin.OptIn
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class AndroidTestBenchmark_Descriptor {
-  @get:Rule
-  val benchmarkRule: BenchmarkRule = BenchmarkRule()
-
   private val androidTestBenchmark: AndroidTestBenchmark = AndroidTestBenchmark()
 
-  @Test
+  @Before
   fun benchmark_AndroidTestBenchmark_setUp() {
     androidTestBenchmark.setUp()
   }
 
-  @Test
-  fun benchmark_AndroidTestBenchmark_teardown() {
+  @After
+  fun benchmark_AndroidTestBenchmark_tearDown() {
     androidTestBenchmark.teardown()
   }
 
   @Test
+  @OptIn(ExperimentalBenchmarkStateApi::class)
   fun benchmark_AndroidTestBenchmark_sqrtBenchmark() {
-    benchmarkRule.measureRepeated {
+    val state = BenchmarkState(warmupCount = 5, repeatCount = 5)
+    while (state.keepRunning()) {
       androidTestBenchmark.sqrtBenchmark()
     }
   }
 
   @Test
+  @OptIn(ExperimentalBenchmarkStateApi::class)
   fun benchmark_AndroidTestBenchmark_cosBenchmark() {
-    benchmarkRule.measureRepeated {
+    val state = BenchmarkState(warmupCount = 5, repeatCount = 5)
+    while (state.keepRunning()) {
       androidTestBenchmark.cosBenchmark()
     }
   }

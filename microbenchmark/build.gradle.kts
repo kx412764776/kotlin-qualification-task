@@ -13,7 +13,7 @@ android {
         targetSdk = 34
 
         testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
-        testInstrumentationRunnerArguments["androidx.benchmark.profiling.mode"] = "StackSampling"
+        // testInstrumentationRunnerArguments["androidx.benchmark.profiling.mode"] = "StackSampling"
         testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "EMULATOR, DEBUGGABLE"
     }
 
@@ -33,19 +33,18 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-}
 
-dependencies {
+    dependencies {
         androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
         androidTestImplementation("junit:junit:4.13.2")
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.material)
-    testImplementation(libs.junit)
-    // TODO: Classes.jar of the method to be called
-    androidTestImplementation(files("E:/myjava/kotlinx-benchmark/examples/kotlin-multiplatform/build/outputs/unpacked-aar/release/classes.jar"))
-    androidTestImplementation("androidx.benchmark:benchmark-junit4:1.2.4")
-    androidTestImplementation(libs.androidx.test.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+        implementation(libs.androidx.core.ktx)
+        implementation(libs.androidx.appcompat)
+        implementation(libs.androidx.material)
+        testImplementation(libs.junit)
+        // TODO: Classes.jar of the method to be called
+        androidTestImplementation(files("E:/myjava/kotlinx-benchmark/examples/kotlin-multiplatform/build/outputs/unpacked-aar/release/classes.jar"))
+        androidTestImplementation("androidx.benchmark:benchmark-junit4:1.2.4")
+        androidTestImplementation(libs.androidx.test.junit)
+        androidTestImplementation(libs.androidx.espresso.core)
+    }
 }
