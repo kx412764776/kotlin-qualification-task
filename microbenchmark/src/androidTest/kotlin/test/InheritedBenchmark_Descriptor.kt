@@ -30,5 +30,9 @@ class InheritedBenchmark_Descriptor {
     while (state.keepRunning()) {
       inheritedBenchmark.inheritedBenchmark()
     }
+    val measurementResult = state.getMeasurementTimeNs()
+    measurementResult.forEachIndexed { index, time ->
+      println("Iteration ${index + 1}: $time ns")
+    }
   }
 }

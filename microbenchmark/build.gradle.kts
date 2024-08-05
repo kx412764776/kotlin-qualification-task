@@ -13,7 +13,7 @@ android {
         targetSdk = 34
 
         testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
-        // testInstrumentationRunnerArguments["androidx.benchmark.profiling.mode"] = "StackSampling"
+        testInstrumentationRunnerArguments["androidx.benchmark.profiling.mode"] = "StackSampling"
         testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "EMULATOR, DEBUGGABLE"
     }
 

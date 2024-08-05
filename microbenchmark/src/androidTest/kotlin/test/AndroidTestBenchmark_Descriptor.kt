@@ -26,18 +26,26 @@ class AndroidTestBenchmark_Descriptor {
   @Test
   @OptIn(ExperimentalBenchmarkStateApi::class)
   fun benchmark_AndroidTestBenchmark_sqrtBenchmark() {
-    val state = BenchmarkState(warmupCount = 5, repeatCount = 5)
+    val state = BenchmarkState(warmupCount = 3, repeatCount = 3)
     while (state.keepRunning()) {
       androidTestBenchmark.sqrtBenchmark()
+    }
+    val measurementResult = state.getMeasurementTimeNs()
+    measurementResult.forEachIndexed { index, time ->
+      println("Iteration ${index + 1}: $time ns")
     }
   }
 
   @Test
   @OptIn(ExperimentalBenchmarkStateApi::class)
   fun benchmark_AndroidTestBenchmark_cosBenchmark() {
-    val state = BenchmarkState(warmupCount = 5, repeatCount = 5)
+    val state = BenchmarkState(warmupCount = 3, repeatCount = 3)
     while (state.keepRunning()) {
       androidTestBenchmark.cosBenchmark()
+    }
+    val measurementResult = state.getMeasurementTimeNs()
+    measurementResult.forEachIndexed { index, time ->
+      println("Iteration ${index + 1}: $time ns")
     }
   }
 }

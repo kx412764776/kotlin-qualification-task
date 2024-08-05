@@ -20,6 +20,10 @@ class ParamBenchmark_Descriptor {
     while (state.keepRunning()) {
       paramBenchmark.mathBenchmark()
     }
+    val measurementResult = state.getMeasurementTimeNs()
+    measurementResult.forEachIndexed { index, time ->
+      println("Iteration ${index + 1}: $time ns")
+    }
   }
 
   @Test
@@ -29,6 +33,10 @@ class ParamBenchmark_Descriptor {
     while (state.keepRunning()) {
       paramBenchmark.otherBenchmark()
     }
+    val measurementResult = state.getMeasurementTimeNs()
+    measurementResult.forEachIndexed { index, time ->
+      println("Iteration ${index + 1}: $time ns")
+    }
   }
 
   @Test
@@ -37,6 +45,10 @@ class ParamBenchmark_Descriptor {
     val state = BenchmarkState(warmupCount = 5, repeatCount = 3)
     while (state.keepRunning()) {
       paramBenchmark.textContentCheck()
+    }
+    val measurementResult = state.getMeasurementTimeNs()
+    measurementResult.forEachIndexed { index, time ->
+      println("Iteration ${index + 1}: $time ns")
     }
   }
 }

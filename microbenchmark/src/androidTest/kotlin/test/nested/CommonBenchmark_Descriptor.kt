@@ -25,5 +25,9 @@ class CommonBenchmark_Descriptor {
     while (state.keepRunning()) {
       commonBenchmark.mathBenchmark()
     }
+    val measurementResult = state.getMeasurementTimeNs()
+    measurementResult.forEachIndexed { index, time ->
+      println("Iteration ${index + 1}: $time ns")
+    }
   }
 }
